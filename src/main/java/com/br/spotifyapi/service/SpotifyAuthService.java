@@ -10,6 +10,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.util.Base64;
 
 @Service
@@ -24,7 +25,16 @@ public class SpotifyAuthService {
     @Value("${spotify.client-secret}")
     private String clientSecret;
 
+    private String accessToken;
+
+    private Instant expiresAt;
+
     public String getAccessToken() {
+
+        if (accessToken != null && expiresAt != null && Instant.now().isBefore(expiresAt)) {
+
+            return accessToken;
+        }
 
         String credentials = clientId + ":" + clientSecret;
 
@@ -37,7 +47,11 @@ public class SpotifyAuthService {
 
         SpotifyTokenResponse spotifyTokenResponse = spotifyAuthClient.getToken(authorization, body);
 
-        return spotifyTokenResponse.accessToken();
+        accessToken = spotifyTokenResponse.accessToken();
+
+        expiresAt = Instant.now().plusSeconds(spotifyTokenResponse.expiresIn() - 30);
+
+        return accessToken;
     }
 
 }

@@ -6,6 +6,9 @@ import com.br.spotifyapi.models.entites.Album;
 import com.br.spotifyapi.models.entites.Artist;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
 public class AlbumMapper {
 
@@ -35,5 +38,17 @@ public class AlbumMapper {
                 album.getSpotifyUrl()
         );
     }
+
+    public List<AlbumResponse> toAlbumResponseList(List<Album> albums) {
+
+        List<AlbumResponse> responses = new ArrayList<>();
+
+        for (Album album : albums) {
+            responses.add(toAlbumResponse(album));
+        }
+
+        return responses;
+    }
+
 
 }

@@ -5,6 +5,9 @@ import com.br.spotifyapi.models.dto.ArtistResponse;
 import com.br.spotifyapi.models.entites.Artist;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
 public class ArtistMapper {
 
@@ -31,4 +34,16 @@ public class ArtistMapper {
                 artist.getPopularity()
         );
     }
+
+    public List<ArtistResponse> toArtistResponseList(List<Artist> artists) {
+
+        List<ArtistResponse> responses = new ArrayList<>();
+
+        for (Artist artist : artists) {
+            responses.add(toArtistResponse(artist));
+        }
+
+        return responses;
+    }
+
 }
