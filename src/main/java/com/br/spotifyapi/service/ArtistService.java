@@ -5,6 +5,7 @@ import com.br.spotifyapi.client.SpotifyClient;
 import com.br.spotifyapi.client.dto.ArtistClientResponse;
 import com.br.spotifyapi.exceptions.ArtistAlreadyExistsException;
 import com.br.spotifyapi.exceptions.ArtistNotFoundException;
+import com.br.spotifyapi.exceptions.InvalidSortDirectionException;
 import com.br.spotifyapi.exceptions.SpotifyApiException;
 import com.br.spotifyapi.models.dto.AlbumClientResponse;
 import com.br.spotifyapi.models.dto.AlbumResponse;
@@ -18,6 +19,10 @@ import com.br.spotifyapi.repositories.AlbumRepository;
 import com.br.spotifyapi.repositories.ArtistRepository;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -96,11 +101,28 @@ public class ArtistService {
 
     }
 
-    public List<ArtistResponse> findAll() {
+    public Page<ArtistResponse> findAll(int page, int size, String direction) {
 
-        List<Artist> artists = artistRepository.findAll();
+        Sort sort;
 
-        return artistMapper.toArtistResponseList(artists);
+        if (direction.equalsIgnoreCase("desc")) {
+
+            sort = Sort.by("name").descending();
+
+        } else if (direction.equalsIgnoreCase("asc")) {
+
+            sort = Sort.by("name").ascending();
+
+        } else {
+
+            throw new InvalidSortDirectionException("A direção deve ser 'asc' ou 'desc'");
+        }
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<Artist> artists = artistRepository.findAll(pageable);
+
+        return artists.map(artistMapper::toArtistResponse);
     }
 
     private void validateArtistAlreadyExists(String spotifyId) {

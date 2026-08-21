@@ -65,4 +65,22 @@ public class ResourceExceptionHandler {
 
         return ResponseEntity.status(status).body(error);
     }
+
+    @ExceptionHandler(InvalidSortDirectionException.class)
+    public ResponseEntity<StandardError> invalidSortDirection(
+            InvalidSortDirectionException e,
+            HttpServletRequest request) {
+
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+
+        StandardError error = new StandardError(
+                Instant.now(),
+                status.value(),
+                status.getReasonPhrase(),
+                e.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(status).body(error);
+    }
 }

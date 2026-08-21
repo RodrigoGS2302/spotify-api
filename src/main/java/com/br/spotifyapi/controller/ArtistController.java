@@ -12,13 +12,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -180,17 +177,36 @@ public class ArtistController {
     }
 
     @Operation(
-            summary = "Listar artistas",
-            description = "Retorna todos os artistas cadastrados"
+            summary = "Listar artistas com paginação",
+            description = "Retorna os artistas cadastrados de forma paginada, com ordenação por nome em ordem ascendente ou descendente"
     )
-    @ApiResponse(
-            responseCode = "200",
-            description = "Lista de artistas retornada com sucesso"
-    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Página de artistas retornada com sucesso"
+            )
+    })
     @GetMapping
-    public ResponseEntity<List<ArtistResponse>> findAll() {
+    public ResponseEntity<Page<ArtistResponse>> findAll(
+            @Parameter(
+                    description = "Número da página. A primeira página é 0",
+                    example = "0"
+            )
+            @RequestParam(defaultValue = "0") int page,
 
-        List<ArtistResponse> artistResponses = artistService.findAll();
+            @Parameter(
+                    description = "Quantidade de artistas por página",
+                    example = "5"
+            )
+            @RequestParam(defaultValue = "5") int size,
+
+            @Parameter(
+                    description = "Direção da ordenação pelo nome: asc ou desc",
+                    example = "asc"
+            )
+            @RequestParam(defaultValue = "asc") String direction) {
+
+        Page<ArtistResponse> artistResponses = artistService.findAll(page, size, direction);
 
         return ResponseEntity.ok(artistResponses);
     }
