@@ -1,12 +1,12 @@
 # Spotify API
 
-API REST desenvolvida em Java e Spring Boot para integração com a API do Spotify.
+API REST desenvolvida em Java e Spring Boot para integração com a Spotify Web API.
 
-O projeto permite consultar artistas no Spotify, armazenar seus dados e álbuns em banco de dados PostgreSQL e gerar um ranking de artistas baseado em popularidade.
+O projeto permite consultar artistas no Spotify, armazenar seus dados e álbuns em PostgreSQL e gerar um ranking de artistas baseado em popularidade.
 
 ## Tecnologias
 
-- Java
+- Java 17
 - Spring Boot
 - Spring Data JPA
 - OpenFeign
@@ -17,6 +17,7 @@ O projeto permite consultar artistas no Spotify, armazenar seus dados e álbuns 
 - Mockito
 - Spotify Web API
 - OAuth 2.0
+- Swagger / OpenAPI
 
 ## Funcionalidades
 
@@ -30,55 +31,81 @@ O projeto permite consultar artistas no Spotify, armazenar seus dados e álbuns 
 - Busca de álbuns por artista
 - Ranking de artistas por popularidade
 - Tratamento global de exceções
+- Respostas de erro padronizadas
 - Testes unitários com JUnit e Mockito
+- Documentação interativa com Swagger/OpenAPI
 
 ## Endpoints
 
 ### Cadastrar artista
 
 ```http
-POST /artist/{spotifyId}
+POST /artists/{spotifyId}
 ```
 
-Consulta o artista no Spotify e salva seus dados no banco.
+Consulta o artista na API do Spotify e salva seus dados no banco.
 
 ### Cadastrar álbuns do artista
 
 ```http
-POST /artist/{spotifyId}/albums
+POST /artists/{spotifyId}/albums
 ```
 
-Consulta os álbuns do artista no Spotify e salva no banco.
+Consulta os álbuns do artista no Spotify e salva os que ainda não estão cadastrados.
 
 ### Buscar artista por ID
 
 ```http
-GET /artist/{id}
+GET /artists/{id}
 ```
+
+Retorna um artista pelo ID interno do banco de dados.
 
 ### Buscar todos os artistas
 
 ```http
-GET /artist
+GET /artists
 ```
+
+Retorna todos os artistas cadastrados.
 
 ### Buscar álbuns de um artista
 
 ```http
-GET /artist/{artistId}/albums
+GET /artists/{artistId}/albums
 ```
+
+Retorna os álbuns cadastrados de determinado artista.
 
 ### Ranking de artistas
 
 ```http
-GET /artist/ranking
+GET /artists/ranking
 ```
 
-Retorna os artistas ordenados pela popularidade.
+Retorna os artistas ordenados por popularidade, do maior para o menor.
+
+## Swagger / OpenAPI
+
+A API possui documentação interativa utilizando Swagger e OpenAPI.
+
+Com a aplicação em execução, a documentação pode ser acessada em:
+
+```text
+http://localhost:8080/swagger-ui.html
+```
+
+A especificação OpenAPI também está disponível em:
+
+```text
+http://localhost:8080/v3/api-docs
+```
+
+Pelo Swagger é possível visualizar os endpoints, parâmetros, modelos de resposta, possíveis erros e executar requisições diretamente pela interface.
 
 ## Autenticação com Spotify
 
-A aplicação utiliza o fluxo OAuth 2.0 Client Credentials para obter um Access Token.
+A aplicação utiliza o fluxo OAuth 2.0 Client Credentials para obter um Access Token da Spotify Web API.
 
 As credenciais não ficam armazenadas diretamente no código. Elas são obtidas através das variáveis de ambiente:
 
@@ -94,11 +121,13 @@ spotify.client-id=${SPOTIFY_CLIENT_ID}
 spotify.client-secret=${SPOTIFY_CLIENT_SECRET}
 ```
 
+O Access Token é reutilizado enquanto estiver válido, evitando solicitações desnecessárias de novos tokens.
+
 ## Banco de dados
 
 O projeto utiliza PostgreSQL para persistência dos dados.
 
-Principais entidades:
+As principais entidades são:
 
 ```text
 Artist
@@ -118,7 +147,17 @@ Entre os erros tratados estão:
 - artista já cadastrado;
 - erro de comunicação com a Spotify Web API.
 
-Os erros são retornados em uma estrutura padronizada contendo informações como status HTTP, mensagem, horário e endpoint.
+Os erros seguem uma estrutura padronizada através do `StandardError`:
+
+```json
+{
+  "timestamp": "2026-08-21T12:00:00Z",
+  "status": 404,
+  "error": "Not Found",
+  "message": "Artista não encontrado",
+  "path": "/artists/999"
+}
+```
 
 ## Testes
 
@@ -133,6 +172,26 @@ Entre os componentes testados estão:
 - `AlbumMapper`
 
 Também existe um teste de carregamento do contexto do Spring Boot.
+
+## Estrutura do projeto
+
+```text
+com.br.spotifyapi
+├── client
+│   └── dto
+├── config
+├── controller
+├── exceptions
+├── models
+│   ├── dto
+│   ├── entities
+│   └── mapper
+├── repositories
+├── service
+└── SpotifyApiApplication
+```
+
+A aplicação segue uma separação em camadas, mantendo responsabilidades de controller, regras de negócio, persistência, mapeamento e comunicação com serviços externos.
 
 ## Como executar
 
@@ -149,12 +208,26 @@ SPOTIFY_CLIENT_ID
 SPOTIFY_CLIENT_SECRET
 ```
 
-Configure o PostgreSQL conforme as propriedades da aplicação e execute o projeto pela IDE ou utilizando Maven:
+Configure o PostgreSQL conforme as propriedades da aplicação.
+
+Execute pela IDE ou utilizando Maven:
 
 ```bash
 ./mvnw spring-boot:run
 ```
 
+Com a aplicação iniciada, a API estará disponível em:
+
+```text
+http://localhost:8080
+```
+
+E a documentação Swagger em:
+
+```text
+http://localhost:8080/swagger-ui.html
+```
+
 ## Objetivo
 
-Projeto desenvolvido para praticar desenvolvimento backend com Java e Spring Boot, integração com APIs externas, OAuth 2.0, OpenFeign, persistência com JPA, tratamento de exceções e testes unitários.
+Projeto desenvolvido para praticar e consolidar conceitos de desenvolvimento backend com Java e Spring Boot, incluindo integração com APIs externas, OAuth 2.0, OpenFeign, persistência com JPA, PostgreSQL, tratamento de exceções, testes unitários e documentação de APIs com Swagger/OpenAPI.
