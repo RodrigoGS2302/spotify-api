@@ -26,9 +26,7 @@ public class Artist {
     private String name;
 
     private String spotifyUrl;
-
-    private Integer popularity;
-
+    
     @OneToMany(mappedBy = "artist")
     private List<Album> albums = new ArrayList<>();
 }

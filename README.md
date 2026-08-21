@@ -2,7 +2,7 @@
 
 API REST desenvolvida em Java e Spring Boot para integração com a Spotify Web API.
 
-O projeto permite consultar artistas no Spotify, armazenar seus dados e álbuns em PostgreSQL e gerar um ranking de artistas baseado em popularidade.
+O projeto permite consultar artistas na Spotify Web API, armazenar seus dados e álbuns em PostgreSQL e disponibilizar endpoints para consulta e gerenciamento dessas informações
 
 ## Tecnologias
 

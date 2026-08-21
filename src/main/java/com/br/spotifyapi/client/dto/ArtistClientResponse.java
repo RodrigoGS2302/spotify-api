@@ -8,8 +8,6 @@ public record ArtistClientResponse(
 
         String name,
 
-        Integer popularity,
-
         @JsonProperty("external_urls")
         ExternalUrlsResponse externalUrls
 

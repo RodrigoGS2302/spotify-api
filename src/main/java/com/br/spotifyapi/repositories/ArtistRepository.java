@@ -12,7 +12,4 @@ public interface ArtistRepository extends JpaRepository <Artist, Long> {
 
     Optional<Artist> findBySpotifyId(String spotifyId);
 
-    List<Artist> findAllByOrderByPopularityDesc();
-
-
 }

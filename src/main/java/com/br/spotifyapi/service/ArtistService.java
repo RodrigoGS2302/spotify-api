@@ -103,14 +103,6 @@ public class ArtistService {
         return artistMapper.toArtistResponseList(artists);
     }
 
-    public List<ArtistResponse> findRanking(){
-
-        List<Artist> artistList = artistRepository.findAllByOrderByPopularityDesc();
-
-        return artistMapper.toArtistResponseList(artistList);
-
-    }
-
     private void validateArtistAlreadyExists(String spotifyId) {
 
         if (artistRepository.existsBySpotifyId(spotifyId)) {

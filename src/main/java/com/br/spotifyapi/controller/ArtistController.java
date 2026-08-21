@@ -194,20 +194,4 @@ public class ArtistController {
 
         return ResponseEntity.ok(artistResponses);
     }
-
-    @Operation(
-            summary = "Ranking de artistas",
-            description = "Retorna os artistas cadastrados ordenados pela popularidade, do maior para o menor"
-    )
-    @ApiResponse(
-            responseCode = "200",
-            description = "Ranking retornado com sucesso"
-    )
-    @GetMapping("/ranking")
-    public ResponseEntity<List<ArtistResponse>> findRanking() {
-
-        List<ArtistResponse> artistResponses = artistService.findRanking();
-
-        return ResponseEntity.ok(artistResponses);
-    }
 }

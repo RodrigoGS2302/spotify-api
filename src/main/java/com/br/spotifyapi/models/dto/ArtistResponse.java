@@ -27,13 +27,7 @@ public record ArtistResponse(
                 description = "URL do artista no Spotify",
                 example = "https://open.spotify.com/artist/..."
         )
-        String spotifyUrl,
-
-        @Schema(
-                description = "Índice de popularidade do artista no Spotify",
-                example = "95"
-        )
-        Integer popularity
+        String spotifyUrl
 
 ) {
 }

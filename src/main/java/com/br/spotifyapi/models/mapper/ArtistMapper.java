@@ -18,7 +18,6 @@ public class ArtistMapper {
 
         artist.setSpotifyId(response.id());
         artist.setName(response.name());
-        artist.setPopularity(response.popularity());
         artist.setSpotifyUrl(response.externalUrls().spotify());
 
         return artist;
@@ -30,8 +29,7 @@ public class ArtistMapper {
                 artist.getId(),
                 artist.getSpotifyId(),
                 artist.getName(),
-                artist.getSpotifyUrl(),
-                artist.getPopularity()
+                artist.getSpotifyUrl()
         );
     }
 

@@ -58,14 +58,14 @@ class ArtistServiceTest {
         artist.setSpotifyId("spotify123");
         artist.setName("Artista Teste");
         artist.setSpotifyUrl("https://spotify.com/artista");
-        artist.setPopularity(90);
+
 
         artistResponse = new ArtistResponse(
                 1L,
                 "spotify123",
                 "Artista Teste",
-                "https://spotify.com/artista",
-                90
+                "https://spotify.com/artista"
+
         );
     }
 
@@ -129,36 +129,6 @@ class ArtistServiceTest {
 
         verify(artistRepository).findAll();
         verify(artistMapper).toArtistResponseList(artists);
-    }
-
-    // =========================
-    // RANKING
-    // =========================
-
-    @Test
-    void shouldFindRanking() {
-
-        List<Artist> artists = List.of(artist);
-        List<ArtistResponse> responses = List.of(artistResponse);
-
-        when(artistRepository.findAllByOrderByPopularityDesc())
-                .thenReturn(artists);
-
-        when(artistMapper.toArtistResponseList(artists))
-                .thenReturn(responses);
-
-        List<ArtistResponse> result = artistService.findRanking();
-
-        assertEquals(1, result.size());
-
-        // SEGUNDA ALTERAÇÃO É AQUI
-        assertEquals(artistResponse, result.get(0));
-
-        verify(artistRepository)
-                .findAllByOrderByPopularityDesc();
-
-        verify(artistMapper)
-                .toArtistResponseList(artists);
     }
 
     // =========================
