@@ -2,14 +2,7 @@ package com.br.spotifyapi.controller;
 
 import com.br.spotifyapi.models.dto.AlbumResponse;
 import com.br.spotifyapi.models.dto.ArtistResponse;
-import com.br.spotifyapi.models.dto.StandardError;
 import com.br.spotifyapi.service.ArtistService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,184 +19,51 @@ import java.util.List;
         name = "Artistas",
         description = "Endpoints para gerenciamento de artistas e álbuns"
 )
-public class ArtistController {
+public class ArtistController implements ArtistInterface {
 
     private final ArtistService artistService;
 
-    @Operation(
-            summary = "Cadastrar artista",
-            description = "Busca um artista na API do Spotify pelo Spotify ID e salva no banco de dados"
-    )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "201",
-                    description = "Artista cadastrado com sucesso"
-            ),
-            @ApiResponse(
-                    responseCode = "409",
-                    description = "Artista já cadastrado",
-                    content = @Content(
-                            schema = @Schema(
-                                    implementation = StandardError.class
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "502",
-                    description = "Erro ao consultar a API do Spotify",
-                    content = @Content(
-                            schema = @Schema(
-                                    implementation = StandardError.class
-                            )
-                    )
-            )
-    })
+    @Override
     @PostMapping("/{spotifyId}")
-    public ResponseEntity<ArtistResponse> saveArtist(
-            @Parameter(
-                    description = "ID do artista no Spotify",
-                    example = "45Yz90pqjzEdJzpEQg1eII"
-            )
-            @PathVariable String spotifyId) {
+    public ResponseEntity<ArtistResponse> saveArtist(@PathVariable String spotifyId) {
 
         ArtistResponse artistResponse = artistService.saveArtist(spotifyId);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(artistResponse);
     }
 
-    @Operation(
-            summary = "Cadastrar álbuns do artista",
-            description = "Busca os álbuns do artista na API do Spotify e salva os que ainda não estão cadastrados"
-    )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Álbuns processados com sucesso"
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Artista não encontrado",
-                    content = @Content(
-                            schema = @Schema(
-                                    implementation = StandardError.class
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "502",
-                    description = "Erro ao consultar a API do Spotify",
-                    content = @Content(
-                            schema = @Schema(
-                                    implementation = StandardError.class
-                            )
-                    )
-            )
-    })
+    @Override
     @PostMapping("/{spotifyId}/albums")
-    public ResponseEntity<List<AlbumResponse>> saveAlbums(
-            @Parameter(
-                    description = "ID do artista no Spotify",
-                    example = "45Yz90pqjzEdJzpEQg1eII"
-            )
-            @PathVariable String spotifyId) {
+    public ResponseEntity<List<AlbumResponse>> saveAlbums(@PathVariable String spotifyId) {
 
         List<AlbumResponse> albumResponses = artistService.saveAlbums(spotifyId);
 
         return ResponseEntity.ok(albumResponses);
     }
 
-    @Operation(
-            summary = "Buscar álbuns por artista",
-            description = "Retorna os álbuns cadastrados de determinado artista"
-    )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Álbuns encontrados"
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Artista não encontrado",
-                    content = @Content(
-                            schema = @Schema(
-                                    implementation = StandardError.class
-                            )
-                    )
-            )
-    })
+    @Override
     @GetMapping("/{artistId}/albums")
-    public ResponseEntity<List<AlbumResponse>> findAlbumsByArtist(
-            @Parameter(
-                    description = "ID interno do artista no banco de dados",
-                    example = "1"
-            )
-            @PathVariable Long artistId) {
+    public ResponseEntity<List<AlbumResponse>> findAlbumsByArtist(@PathVariable Long artistId) {
 
         List<AlbumResponse> albumResponses = artistService.findAlbumsByArtist(artistId);
 
         return ResponseEntity.ok(albumResponses);
     }
 
-    @Operation(
-            summary = "Buscar artista por ID",
-            description = "Retorna um artista cadastrado pelo ID interno do banco de dados"
-    )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Artista encontrado"
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Artista não encontrado",
-                    content = @Content(
-                            schema = @Schema(
-                                    implementation = StandardError.class
-                            )
-                    )
-            )
-    })
+    @Override
     @GetMapping("/{id}")
-    public ResponseEntity<ArtistResponse> findById(
-            @Parameter(
-                    description = "ID interno do artista no banco de dados",
-                    example = "1"
-            )
-            @PathVariable Long id) {
+    public ResponseEntity<ArtistResponse> findById(@PathVariable Long id) {
 
         ArtistResponse artistResponse = artistService.findById(id);
 
         return ResponseEntity.ok(artistResponse);
     }
 
-    @Operation(
-            summary = "Listar artistas com paginação",
-            description = "Retorna os artistas cadastrados de forma paginada, com ordenação por nome em ordem ascendente ou descendente"
-    )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Página de artistas retornada com sucesso"
-            )
-    })
+    @Override
     @GetMapping
     public ResponseEntity<Page<ArtistResponse>> findAll(
-            @Parameter(
-                    description = "Número da página. A primeira página é 0",
-                    example = "0"
-            )
             @RequestParam(defaultValue = "0") int page,
-
-            @Parameter(
-                    description = "Quantidade de artistas por página",
-                    example = "5"
-            )
             @RequestParam(defaultValue = "5") int size,
-
-            @Parameter(
-                    description = "Direção da ordenação pelo nome: asc ou desc",
-                    example = "asc"
-            )
             @RequestParam(defaultValue = "asc") String direction) {
 
         Page<ArtistResponse> artistResponses = artistService.findAll(page, size, direction);
