@@ -1,7 +1,6 @@
-package com.br.spotifyapi.models.dto;
+package com.br.spotifyapi.client.dto;
 
 
-import com.br.spotifyapi.client.dto.ExternalUrlsResponse;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record AlbumClientResponse(

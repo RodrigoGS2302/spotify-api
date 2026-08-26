@@ -83,4 +83,95 @@ public class ResourceExceptionHandler {
 
         return ResponseEntity.status(status).body(error);
     }
+
+    @ExceptionHandler(InvalidPlaylistNameException.class)
+    public ResponseEntity<StandardError> invalidPlaylistName(
+            InvalidPlaylistNameException e,
+            HttpServletRequest request) {
+
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+
+        StandardError error = new StandardError(
+                Instant.now(),
+                status.value(),
+                "Invalid playlist name",
+                e.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(status).body(error);
+    }
+
+    @ExceptionHandler(InvalidDescriptionException.class)
+    public ResponseEntity<StandardError> invalidDescription(
+            InvalidDescriptionException e,
+            HttpServletRequest request) {
+
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+
+        StandardError error = new StandardError(
+                Instant.now(),
+                status.value(),
+                "Invalid description",
+                e.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(status).body(error);
+    }
+
+    @ExceptionHandler(PlaylistAlreadyExistsException.class)
+    public ResponseEntity<StandardError> playlistAlreadyExists(
+            PlaylistAlreadyExistsException e,
+            HttpServletRequest request) {
+
+        HttpStatus status = HttpStatus.CONFLICT;
+
+        StandardError error = new StandardError(
+                Instant.now(),
+                status.value(),
+                "Playlist already exists",
+                e.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(status).body(error);
+    }
+
+    @ExceptionHandler(PlaylistNotFoundException.class)
+    public ResponseEntity<StandardError> playlistNotFound(
+            PlaylistNotFoundException e,
+            HttpServletRequest request) {
+
+        HttpStatus status = HttpStatus.NOT_FOUND;
+
+        StandardError error = new StandardError(
+                Instant.now(),
+                status.value(),
+                "Playlist not found",
+                e.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(status).body(error);
+    }
+
+    @ExceptionHandler(TrackAlreadyExistsException.class)
+    public ResponseEntity<StandardError> trackAlreadyExists(
+            TrackAlreadyExistsException e,
+            HttpServletRequest request) {
+
+        HttpStatus status = HttpStatus.CONFLICT;
+
+        StandardError error = new StandardError(
+                Instant.now(),
+                status.value(),
+                "Track already exists",
+                e.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(status).body(error);
+    }
+
 }

@@ -6,6 +6,10 @@ import com.br.spotifyapi.models.entites.Playlist;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
 @RequiredArgsConstructor
 public class PlaylistMapper {
@@ -18,6 +22,8 @@ public class PlaylistMapper {
 
         playlist.setName( playlistRequest.name());
         playlist.setDescription(playlistRequest.description());
+        playlist.setCreatedAt(LocalDateTime.now());
+
 
         return playlist;
 
@@ -33,6 +39,16 @@ public class PlaylistMapper {
               trackMapper.toTrackResponseList(playlist.getTracks())
 
       );
+    }
 
+    public List<PlaylistResponse> toPlaylistResponseList(List<Playlist> playlists) {
+
+        List<PlaylistResponse> playlistResponses = new ArrayList<>();
+
+        for (Playlist playlist : playlists) {
+            playlistResponses.add(toPlaylistResponse(playlist));
+        }
+
+        return playlistResponses;
     }
 }
