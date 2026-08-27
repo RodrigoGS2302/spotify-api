@@ -29,6 +29,7 @@ public class PlaylistService {
     private  final TrackRepository trackRepository;
     private final TrackMapper trackMapper;
 
+    private static final String ONLY_SIMPLE_CHARACTERS = "[a-zA-ZÀ-ÿ0-9 ]+";
 
     public PlaylistResponse createPlaylist (PlaylistRequest playlistRequest){
 
@@ -63,6 +64,8 @@ public class PlaylistService {
 
         Playlist playlist = validatePlaylistExistsById(playlistId);
 
+        validateTrackAlreadyExists(spotifyTrackId, playlistId);
+
         String accessToken = spotifyAuthService.getAccessToken();
 
         String authorization = "Bearer " + accessToken;
@@ -76,7 +79,6 @@ public class PlaylistService {
 
             throw new SpotifyApiException("Erro ao consultar música no Spotify");
         }
-        validateTrackAlreadyExists(spotifyTrackId, playlistId);
 
         Track track = trackMapper.toTrack(trackClientResponse, playlist);
 
@@ -85,16 +87,16 @@ public class PlaylistService {
         return trackMapper.toTrackResponse(savedTrack);
     }
 
-    private void validateNameCharacters (String name){
+    private void validateNameCharacters(String name) {
 
         if (name == null || name.isBlank()) {
             throw new InvalidPlaylistNameException("Nome não pode ser vazio ou nulo");
         }
 
-        if (name.length() > 50 || !name.matches("[a-zA-ZÀ-ÿ0-9 ]+")){
-
-            throw new InvalidPlaylistNameException ("Formato/tamanho do nome inválido");
-         }
+        if (name.length() > 50 || !name.matches(ONLY_SIMPLE_CHARACTERS)) {
+            throw new InvalidPlaylistNameException(
+                    "Nome deve ter no máximo 50 caracteres e não pode conter caracteres especiais");
+        }
     }
 
     private void validatePlaylistAlreadyExists (String name){

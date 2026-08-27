@@ -17,17 +17,12 @@ public class ResourceExceptionHandler {
             ArtistNotFoundException e,
             HttpServletRequest request) {
 
-        HttpStatus status = HttpStatus.NOT_FOUND;
-
-        StandardError error = new StandardError(
-                Instant.now(),
-                status.value(),
-                status.getReasonPhrase(),
-                e.getMessage(),
-                request.getRequestURI()
+        return buildError(
+                HttpStatus.NOT_FOUND,
+                "Artist not found",
+                e,
+                request
         );
-
-        return ResponseEntity.status(status).body(error);
     }
 
     @ExceptionHandler(ArtistAlreadyExistsException.class)
@@ -35,35 +30,25 @@ public class ResourceExceptionHandler {
             ArtistAlreadyExistsException e,
             HttpServletRequest request) {
 
-        HttpStatus status = HttpStatus.CONFLICT;
-
-        StandardError error = new StandardError(
-                Instant.now(),
-                status.value(),
-                status.getReasonPhrase(),
-                e.getMessage(),
-                request.getRequestURI()
+        return buildError(
+                HttpStatus.CONFLICT,
+                "Artist already exists",
+                e,
+                request
         );
-
-        return ResponseEntity.status(status).body(error);
     }
 
-    @ExceptionHandler(SpotifyApiException.class)
-    public ResponseEntity<StandardError> spotifyApiError(
-            SpotifyApiException e,
+    @ExceptionHandler(AlbumAlreadyExistsException.class)
+    public ResponseEntity<StandardError> albumAlreadyExists(
+            AlbumAlreadyExistsException e,
             HttpServletRequest request) {
 
-        HttpStatus status = HttpStatus.BAD_GATEWAY;
-
-        StandardError error = new StandardError(
-                Instant.now(),
-                status.value(),
-                status.getReasonPhrase(),
-                e.getMessage(),
-                request.getRequestURI()
+        return buildError(
+                HttpStatus.CONFLICT,
+                "Album already exists",
+                e,
+                request
         );
-
-        return ResponseEntity.status(status).body(error);
     }
 
     @ExceptionHandler(InvalidSortDirectionException.class)
@@ -71,17 +56,25 @@ public class ResourceExceptionHandler {
             InvalidSortDirectionException e,
             HttpServletRequest request) {
 
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-
-        StandardError error = new StandardError(
-                Instant.now(),
-                status.value(),
-                status.getReasonPhrase(),
-                e.getMessage(),
-                request.getRequestURI()
+        return buildError(
+                HttpStatus.BAD_REQUEST,
+                "Invalid sort direction",
+                e,
+                request
         );
+    }
 
-        return ResponseEntity.status(status).body(error);
+    @ExceptionHandler(SpotifyApiException.class)
+    public ResponseEntity<StandardError> spotifyApiError(
+            SpotifyApiException e,
+            HttpServletRequest request) {
+
+        return buildError(
+                HttpStatus.BAD_GATEWAY,
+                "Bad Gateway",
+                e,
+                request
+        );
     }
 
     @ExceptionHandler(InvalidPlaylistNameException.class)
@@ -89,17 +82,12 @@ public class ResourceExceptionHandler {
             InvalidPlaylistNameException e,
             HttpServletRequest request) {
 
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-
-        StandardError error = new StandardError(
-                Instant.now(),
-                status.value(),
+        return buildError(
+                HttpStatus.BAD_REQUEST,
                 "Invalid playlist name",
-                e.getMessage(),
-                request.getRequestURI()
+                e,
+                request
         );
-
-        return ResponseEntity.status(status).body(error);
     }
 
     @ExceptionHandler(InvalidDescriptionException.class)
@@ -107,17 +95,12 @@ public class ResourceExceptionHandler {
             InvalidDescriptionException e,
             HttpServletRequest request) {
 
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-
-        StandardError error = new StandardError(
-                Instant.now(),
-                status.value(),
+        return buildError(
+                HttpStatus.BAD_REQUEST,
                 "Invalid description",
-                e.getMessage(),
-                request.getRequestURI()
+                e,
+                request
         );
-
-        return ResponseEntity.status(status).body(error);
     }
 
     @ExceptionHandler(PlaylistAlreadyExistsException.class)
@@ -125,17 +108,12 @@ public class ResourceExceptionHandler {
             PlaylistAlreadyExistsException e,
             HttpServletRequest request) {
 
-        HttpStatus status = HttpStatus.CONFLICT;
-
-        StandardError error = new StandardError(
-                Instant.now(),
-                status.value(),
+        return buildError(
+                HttpStatus.CONFLICT,
                 "Playlist already exists",
-                e.getMessage(),
-                request.getRequestURI()
+                e,
+                request
         );
-
-        return ResponseEntity.status(status).body(error);
     }
 
     @ExceptionHandler(PlaylistNotFoundException.class)
@@ -143,17 +121,12 @@ public class ResourceExceptionHandler {
             PlaylistNotFoundException e,
             HttpServletRequest request) {
 
-        HttpStatus status = HttpStatus.NOT_FOUND;
-
-        StandardError error = new StandardError(
-                Instant.now(),
-                status.value(),
+        return buildError(
+                HttpStatus.NOT_FOUND,
                 "Playlist not found",
-                e.getMessage(),
-                request.getRequestURI()
+                e,
+                request
         );
-
-        return ResponseEntity.status(status).body(error);
     }
 
     @ExceptionHandler(TrackAlreadyExistsException.class)
@@ -161,17 +134,28 @@ public class ResourceExceptionHandler {
             TrackAlreadyExistsException e,
             HttpServletRequest request) {
 
-        HttpStatus status = HttpStatus.CONFLICT;
+        return buildError(
+                HttpStatus.CONFLICT,
+                "Track already exists",
+                e,
+                request
+        );
+    }
 
-        StandardError error = new StandardError(
+    private ResponseEntity<StandardError> buildError(
+            HttpStatus status,
+            String error,
+            Exception e,
+            HttpServletRequest request) {
+
+        StandardError standardError = new StandardError(
                 Instant.now(),
                 status.value(),
-                "Track already exists",
+                error,
                 e.getMessage(),
                 request.getRequestURI()
         );
 
-        return ResponseEntity.status(status).body(error);
+        return ResponseEntity.status(status).body(standardError);
     }
-
 }
