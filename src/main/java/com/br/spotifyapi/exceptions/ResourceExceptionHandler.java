@@ -12,6 +12,20 @@ import java.time.Instant;
 @RestControllerAdvice
 public class ResourceExceptionHandler {
 
+
+    @ExceptionHandler(BusinessExceptions.class)
+    public ResponseEntity<StandardError> playlistNotFound(
+            BusinessExceptions e,
+            HttpServletRequest request) {
+
+        return buildError(
+                HttpStatus.NOT_FOUND,
+                e.getMessage(),
+                e,
+                request
+        );
+    }
+
     @ExceptionHandler(ArtistNotFoundException.class)
     public ResponseEntity<StandardError> artistNotFound(
             ArtistNotFoundException e,
@@ -77,44 +91,7 @@ public class ResourceExceptionHandler {
         );
     }
 
-    @ExceptionHandler(InvalidPlaylistNameException.class)
-    public ResponseEntity<StandardError> invalidPlaylistName(
-            InvalidPlaylistNameException e,
-            HttpServletRequest request) {
 
-        return buildError(
-                HttpStatus.BAD_REQUEST,
-                "Invalid playlist name",
-                e,
-                request
-        );
-    }
-
-    @ExceptionHandler(InvalidDescriptionException.class)
-    public ResponseEntity<StandardError> invalidDescription(
-            InvalidDescriptionException e,
-            HttpServletRequest request) {
-
-        return buildError(
-                HttpStatus.BAD_REQUEST,
-                "Invalid description",
-                e,
-                request
-        );
-    }
-
-    @ExceptionHandler(PlaylistAlreadyExistsException.class)
-    public ResponseEntity<StandardError> playlistAlreadyExists(
-            PlaylistAlreadyExistsException e,
-            HttpServletRequest request) {
-
-        return buildError(
-                HttpStatus.CONFLICT,
-                "Playlist already exists",
-                e,
-                request
-        );
-    }
 
     @ExceptionHandler(PlaylistNotFoundException.class)
     public ResponseEntity<StandardError> playlistNotFound(

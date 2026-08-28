@@ -31,7 +31,7 @@ public class PlaylistService {
 
     private static final String ONLY_SIMPLE_CHARACTERS = "[a-zA-ZÀ-ÿ0-9 ]+";
 
-    public PlaylistResponse createPlaylist (PlaylistRequest playlistRequest){
+    public PlaylistResponse createPlaylist (PlaylistRequest playlistRequest) throws BusinessExceptions{
 
         validateNameCharacters(playlistRequest.name());
 
@@ -60,7 +60,7 @@ public class PlaylistService {
         return playlistMapper.toPlaylistResponseList(playlists);
     }
 
-    public TrackResponse addTrack (Long playlistId, String  spotifyTrackId){
+    public TrackResponse addTrack (Long playlistId, String  spotifyTrackId) throws BusinessExceptions{
 
         Playlist playlist = validatePlaylistExistsById(playlistId);
 
@@ -87,33 +87,33 @@ public class PlaylistService {
         return trackMapper.toTrackResponse(savedTrack);
     }
 
-    private void validateNameCharacters(String name) {
+    private void validateNameCharacters(String name) throws BusinessExceptions {
 
         if (name == null || name.isBlank()) {
-            throw new InvalidPlaylistNameException("Nome não pode ser vazio ou nulo");
+            throw new BusinessExceptions("Nome não pode ser vazio ou nulo");
         }
 
         if (name.length() > 50 || !name.matches(ONLY_SIMPLE_CHARACTERS)) {
-            throw new InvalidPlaylistNameException(
+            throw new BusinessExceptions(
                     "Nome deve ter no máximo 50 caracteres e não pode conter caracteres especiais");
         }
     }
 
-    private void validatePlaylistAlreadyExists (String name){
+    private void validatePlaylistAlreadyExists (String name) throws BusinessExceptions{
 
         if (playlistRepository.existsByName(name)){
-            throw new PlaylistAlreadyExistsException ("Já existe playlist com esse nome");
+            throw new BusinessExceptions ("Já existe playlist com esse nome");
         }
     }
 
-    private void validateDescription (String description){
+    private void validateDescription (String description) throws BusinessExceptions{
 
         if (description == null || description.isBlank()) {
-            throw new InvalidDescriptionException("Descrição não pode ser vazia ou nula");
+            throw new BusinessExceptions("Descrição não pode ser vazia ou nula");
         }
 
         if (description.length() > 120){
-            throw new InvalidDescriptionException("Tamanho da descrição inválido");
+            throw new BusinessExceptions("Tamanho da descrição inválido");
         }
     }
 
@@ -129,13 +129,11 @@ public class PlaylistService {
                 .orElseThrow(() -> new PlaylistNotFoundException("Playlist não encontrada"));
     }
 
-    private void validateTrackAlreadyExists(String spotifyTrackId, Long playlistId) {
+    private void validateTrackAlreadyExists(String spotifyTrackId, Long playlistId) throws BusinessExceptions {
 
         if (trackRepository.existsBySpotifyIdAndPlaylistId(spotifyTrackId, playlistId)) {
-            throw new TrackAlreadyExistsException("Música já cadastrada nesta playlist");
+            throw new BusinessExceptions("Música já cadastrada nesta playlist");
         }
     }
-
-
 }
 

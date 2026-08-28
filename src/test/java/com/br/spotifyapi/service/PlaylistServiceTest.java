@@ -2,9 +2,6 @@ package com.br.spotifyapi.service;
 
 import com.br.spotifyapi.client.SpotifyClient;
 import com.br.spotifyapi.client.dto.TrackClientResponse;
-import com.br.spotifyapi.exceptions.InvalidDescriptionException;
-import com.br.spotifyapi.exceptions.InvalidPlaylistNameException;
-import com.br.spotifyapi.exceptions.PlaylistAlreadyExistsException;
 import com.br.spotifyapi.exceptions.PlaylistNotFoundException;
 import com.br.spotifyapi.exceptions.SpotifyApiException;
 import com.br.spotifyapi.exceptions.TrackAlreadyExistsException;

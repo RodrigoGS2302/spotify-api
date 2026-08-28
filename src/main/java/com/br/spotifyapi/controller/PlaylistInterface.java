@@ -1,5 +1,6 @@
 package com.br.spotifyapi.controller;
 
+import com.br.spotifyapi.exceptions.BusinessExceptions;
 import com.br.spotifyapi.models.dto.PlaylistRequest;
 import com.br.spotifyapi.models.dto.PlaylistResponse;
 import com.br.spotifyapi.models.dto.StandardError;
@@ -46,7 +47,7 @@ public interface PlaylistInterface {
     })
     ResponseEntity<PlaylistResponse> createPlaylist(
             PlaylistRequest playlistRequest
-    );
+    )throws BusinessExceptions;
 
     @Operation(
             summary = "Buscar playlist por nome",
@@ -137,5 +138,5 @@ public interface PlaylistInterface {
                     example = "4uLU6hMCjMI75M1A2tKUQC"
             )
             String spotifyTrackId
-    );
+    ) throws BusinessExceptions;
 }

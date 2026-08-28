@@ -1,5 +1,6 @@
 package com.br.spotifyapi.controller;
 
+import com.br.spotifyapi.exceptions.BusinessExceptions;
 import com.br.spotifyapi.models.dto.PlaylistRequest;
 import com.br.spotifyapi.models.dto.PlaylistResponse;
 import com.br.spotifyapi.models.dto.TrackResponse;
@@ -27,7 +28,8 @@ public class PlaylistController implements PlaylistInterface {
 
     @Override
     @PostMapping
-    public ResponseEntity<PlaylistResponse> createPlaylist (@RequestBody PlaylistRequest playlistRequest){
+    public ResponseEntity<PlaylistResponse> createPlaylist (@RequestBody PlaylistRequest playlistRequest)
+            throws BusinessExceptions{
 
         PlaylistResponse playlistResponse = playlistService.createPlaylist(playlistRequest);
 
@@ -54,7 +56,8 @@ public class PlaylistController implements PlaylistInterface {
 
     @Override
     @PostMapping("/{playlistId}/tracks/{spotifyTrackId}")
-    public ResponseEntity<TrackResponse> addTrack(@PathVariable Long playlistId, @PathVariable String spotifyTrackId) {
+    public ResponseEntity<TrackResponse> addTrack(@PathVariable Long playlistId, @PathVariable String spotifyTrackId)
+            throws BusinessExceptions {
 
         TrackResponse trackResponse = playlistService.addTrack(playlistId, spotifyTrackId);
 
