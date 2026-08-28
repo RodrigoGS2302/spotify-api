@@ -12,22 +12,31 @@ import java.time.Instant;
 @RestControllerAdvice
 public class ResourceExceptionHandler {
 
+
+    @ExceptionHandler(BusinessExceptions.class)
+    public ResponseEntity<StandardError> playlistNotFound(
+            BusinessExceptions e,
+            HttpServletRequest request) {
+
+        return buildError(
+                HttpStatus.NOT_FOUND,
+                e.getMessage(),
+                e,
+                request
+        );
+    }
+
     @ExceptionHandler(ArtistNotFoundException.class)
     public ResponseEntity<StandardError> artistNotFound(
             ArtistNotFoundException e,
             HttpServletRequest request) {
 
-        HttpStatus status = HttpStatus.NOT_FOUND;
-
-        StandardError error = new StandardError(
-                Instant.now(),
-                status.value(),
-                status.getReasonPhrase(),
-                e.getMessage(),
-                request.getRequestURI()
+        return buildError(
+                HttpStatus.NOT_FOUND,
+                "Artist not found",
+                e,
+                request
         );
-
-        return ResponseEntity.status(status).body(error);
     }
 
     @ExceptionHandler(ArtistAlreadyExistsException.class)
@@ -35,35 +44,25 @@ public class ResourceExceptionHandler {
             ArtistAlreadyExistsException e,
             HttpServletRequest request) {
 
-        HttpStatus status = HttpStatus.CONFLICT;
-
-        StandardError error = new StandardError(
-                Instant.now(),
-                status.value(),
-                status.getReasonPhrase(),
-                e.getMessage(),
-                request.getRequestURI()
+        return buildError(
+                HttpStatus.CONFLICT,
+                "Artist already exists",
+                e,
+                request
         );
-
-        return ResponseEntity.status(status).body(error);
     }
 
-    @ExceptionHandler(SpotifyApiException.class)
-    public ResponseEntity<StandardError> spotifyApiError(
-            SpotifyApiException e,
+    @ExceptionHandler(AlbumAlreadyExistsException.class)
+    public ResponseEntity<StandardError> albumAlreadyExists(
+            AlbumAlreadyExistsException e,
             HttpServletRequest request) {
 
-        HttpStatus status = HttpStatus.BAD_GATEWAY;
-
-        StandardError error = new StandardError(
-                Instant.now(),
-                status.value(),
-                status.getReasonPhrase(),
-                e.getMessage(),
-                request.getRequestURI()
+        return buildError(
+                HttpStatus.CONFLICT,
+                "Album already exists",
+                e,
+                request
         );
-
-        return ResponseEntity.status(status).body(error);
     }
 
     @ExceptionHandler(InvalidSortDirectionException.class)
@@ -71,16 +70,69 @@ public class ResourceExceptionHandler {
             InvalidSortDirectionException e,
             HttpServletRequest request) {
 
-        HttpStatus status = HttpStatus.BAD_REQUEST;
+        return buildError(
+                HttpStatus.BAD_REQUEST,
+                "Invalid sort direction",
+                e,
+                request
+        );
+    }
 
-        StandardError error = new StandardError(
+    @ExceptionHandler(SpotifyApiException.class)
+    public ResponseEntity<StandardError> spotifyApiError(
+            SpotifyApiException e,
+            HttpServletRequest request) {
+
+        return buildError(
+                HttpStatus.BAD_GATEWAY,
+                "Bad Gateway",
+                e,
+                request
+        );
+    }
+
+
+
+    @ExceptionHandler(PlaylistNotFoundException.class)
+    public ResponseEntity<StandardError> playlistNotFound(
+            PlaylistNotFoundException e,
+            HttpServletRequest request) {
+
+        return buildError(
+                HttpStatus.NOT_FOUND,
+                "Playlist not found",
+                e,
+                request
+        );
+    }
+
+    @ExceptionHandler(TrackAlreadyExistsException.class)
+    public ResponseEntity<StandardError> trackAlreadyExists(
+            TrackAlreadyExistsException e,
+            HttpServletRequest request) {
+
+        return buildError(
+                HttpStatus.CONFLICT,
+                "Track already exists",
+                e,
+                request
+        );
+    }
+
+    private ResponseEntity<StandardError> buildError(
+            HttpStatus status,
+            String error,
+            Exception e,
+            HttpServletRequest request) {
+
+        StandardError standardError = new StandardError(
                 Instant.now(),
                 status.value(),
-                status.getReasonPhrase(),
+                error,
                 e.getMessage(),
                 request.getRequestURI()
         );
 
-        return ResponseEntity.status(status).body(error);
+        return ResponseEntity.status(status).body(standardError);
     }
 }

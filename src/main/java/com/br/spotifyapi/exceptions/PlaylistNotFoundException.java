@@ -1,0 +1,7 @@
+package com.br.spotifyapi.exceptions;
+
+public class PlaylistNotFoundException extends RuntimeException {
+    public PlaylistNotFoundException(String message) {
+        super(message);
+    }
+}

@@ -7,7 +7,7 @@ import com.br.spotifyapi.exceptions.ArtistAlreadyExistsException;
 import com.br.spotifyapi.exceptions.ArtistNotFoundException;
 import com.br.spotifyapi.exceptions.InvalidSortDirectionException;
 import com.br.spotifyapi.exceptions.SpotifyApiException;
-import com.br.spotifyapi.models.dto.AlbumClientResponse;
+import com.br.spotifyapi.client.dto.AlbumClientResponse;
 import com.br.spotifyapi.models.dto.AlbumResponse;
 import com.br.spotifyapi.models.dto.AlbumsClientResponse;
 import com.br.spotifyapi.models.dto.ArtistResponse;

@@ -1,6 +1,8 @@
 package com.br.spotifyapi.models.mapper;
 
+import com.br.spotifyapi.client.dto.TrackClientResponse;
 import com.br.spotifyapi.models.dto.TrackResponse;
+import com.br.spotifyapi.models.entites.Playlist;
 import com.br.spotifyapi.models.entites.Track;
 import org.springframework.stereotype.Component;
 
@@ -31,5 +33,15 @@ public class TrackMapper {
 
         return trackResponses;
 
+    }
+    public Track toTrack(TrackClientResponse trackClientResponse, Playlist playlist) {
+
+        Track track = new Track();
+
+        track.setSpotifyId(trackClientResponse.spotifyId());
+        track.setName(trackClientResponse.name());
+        track.setPlaylist(playlist);
+
+        return track;
     }
 }

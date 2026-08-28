@@ -1,6 +1,6 @@
 package com.br.spotifyapi.models.mapper;
 
-import com.br.spotifyapi.models.dto.AlbumClientResponse;
+import com.br.spotifyapi.client.dto.AlbumClientResponse;
 import com.br.spotifyapi.models.dto.AlbumResponse;
 import com.br.spotifyapi.models.entites.Album;
 import com.br.spotifyapi.models.entites.Artist;
